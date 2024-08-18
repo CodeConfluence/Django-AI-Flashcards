@@ -8,7 +8,8 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from decouple import config
-from .models import UserProfile, UserPayment
+from .models import UserPayment
+from flashcard_app.models import Profile
 
 # Set Stripe API key
 stripe.api_key = config('STRIPE_SECRET_KEY')
@@ -99,7 +100,14 @@ def stripe_webhook(request):
             user_payment.payment_bool = True
             user_payment.save()
 
-            # send a confirmation email perhaps and update user profile to indicate premium status
+            # send a confirmation email perhaps 
+            try:
+                user = request.user
+                user_profile = Profile.objects.get(user=user)
+                user_profile.premium = True
+                user_profile.save()
+            except Profile.DoesNotExist:
+                return redirect('register')
 
         except UserPayment.DoesNotExist:
             return redirect('premium_upgrade')
