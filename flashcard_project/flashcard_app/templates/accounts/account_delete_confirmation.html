@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Deletion Confirmation</title>
+    {% load static %}
+    <link rel="icon" href="{% static 'images/Icon.png' %}" type="image/png">
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+</head>
+<body class="profile-page">
+    <div class="profile-container">
+        <div class="main-content">
+            <div class="delete-confirmation-section">
+                <h2>Are you sure you want to delete your account?</h2>
+                <p>This action is irreversible. All your data and agents will be permanently deleted.</p>
+                <form method="POST" action="{% url 'account_delete' %}">
+                    {% csrf_token %}
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-delete">Yes, Delete My Account</button>
+                        <a href="{% url 'profile' %}">
+                            <button type="button" class="btn cancel-delete">Cancel</button>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
