@@ -27,6 +27,10 @@ urlpatterns = [
     path('flashcard_sets/<int:set_id>/delete/', views.delete_flashcard_set_view, name='delete_flashcard_set'), # delete flashcard set
     path('flashcard_sets/selection/', views.flashcard_set_selection_view, name='flashcard_set_selection'), # where the user selects which flashcard set they're going to use
     path('generate-content/<str:set_name>/', views.generate_content_view, name='generate_content'),
+    path('premium_upgrade/', views.premium_upgrade, name='premium_upgrade'),
+    path('payment_successful/', views.payment_successful, name='payment_successful'),
+    path('payment_cancelled/', views.payment_cancelled, name='payment_cancelled'),
+    path('stripe_webhook', views.stripe_webhook, name='stripe_webhook'),
 ]
 
 if settings.DEBUG:
