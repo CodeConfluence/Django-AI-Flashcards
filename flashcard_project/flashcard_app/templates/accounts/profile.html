@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    {% load static %}
+    <link rel="icon" href="{% static 'images/Icon.png' %}" type="image/png">
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+</head>
+    <body class="profile-page">
+        <div class="profile-container">
+            <aside class="sidebar">
+                <ul>
+                    <li><a href="#account" class="active">Account</a></li>
+                    <li><a href="#agent">Agent</a></li>
+                </ul>
+            </aside>
+            <div class="main-content">
+                <form method="POST" action="{% url 'account_update' %}" id="account" class="profile-section" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h2>Account</h2>
+                    <div class="profile-picture">
+                        <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/user.png' %}{% endif %}" alt="Profile Picture" id="profile-image" class="profile-image">
+                        <div class="edit-icon-wrapper" onclick="toggleProfilePictureDropdown(event)">
+                            <div class="edit-icon-background"></div>
+                            <img src="{% static 'images/edit.svg' %}" alt="Edit" class="edit-icon">
+                        </div>
+                        <div id="profile-picture-dropdown" class="profile-picture-dropdown">
+                            <a href="#" onclick="document.getElementById('image-upload').click(); return false;">Change</a>
+                            <a href="#" onclick="removePicture(); return false;">Remove</a>
+                        </div>
+                        <input type="file" id="image-upload" name="profile_image" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <div class="section-divider"></div>
+                    
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>First Name</label>
+                            <div class="input-wrapper">
+                                <input type="text" name="name" placeholder="Name" value="{{ name }}">
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Username</label>
+                            <div class="input-wrapper">
+                                <input type="text" name="Username" placeholder="Username" value="{{ username }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Current Password</label>
+                            <div class="input-wrapper">
+                                <img src="{% static 'images/lock.svg' %}" alt="Lock" class="input-icon input-icon-left">
+                                <input type="password" name="current_password" placeholder="Current password">
+                                <img src="{% static 'images/eye-off.svg' %}" alt="Show/Hide" class="input-icon input-icon-right toggle-password">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>New Password</label>
+                            <div class="input-wrapper">
+                                <img src="{% static 'images/lock.svg' %}" alt="Lock" class="input-icon input-icon-left">
+                                <input type="password" name="new_password" placeholder="New password">
+                                <img src="{% static 'images/eye-off.svg' %}" alt="Show/Hide" class="input-icon input-icon-right toggle-password">
+                            </div>
+                        </div>
+                    </div>
+                    {% if error %}
+                    <p class="error">{{ error }}</p>
+                    {% endif %}
+                    <div class="button-group">
+                        <button type="submit" class="btn save-changes">Save Changes</button>
+                        <a href="{% url 'account_delete' %}">
+                            <button type="button" class="btn btn-delete delete-account">Delete Account</button>
+                        </a>
+                    </div>
+                </form>
+                
+                <div id="agent" class="profile-section" style="display: none;">
+                    <h2>Agents</h2>
+                    <p>Manage your custom AI agents here. You can create, edit, and delete agents tailored to your specific needs.</p>
+                    <ul class="agent-list">
+                        {% for agent in agents %}
+                        <li class="agent-item">
+                            <span class="agent-name">{{ agent.name }}</span>
+                            <div class="agent-actions">
+                                <a href="{% url 'edit_agent' agent.id %}" class="btn">Edit</a>
+                                <a href="{% url 'delete_agent' agent.id %}" class="btn btn-delete">Delete</a>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="agent-item">
+                            <span>No agents found.</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{% url 'create_agent' %}" style="text-decoration: none; display: inline-block;">
+                        <button class="btn" style="margin-top: 20px;">Create New Agent</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    document.querySelectorAll('.profile-section').forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    document.getElementById(targetId).style.display = 'block';
+                    document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.toggle-password').forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const input = this.previousElementSibling;
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+
+                    if (type === 'text') {
+                        input.classList.add('password-input');
+                    } else {
+                        input.classList.remove('password-input');
+                    }
+                    
+                    this.src = type === 'password' ? "{% static 'images/eye-off.svg' %}" : "{% static 'images/eye.svg' %}";
+                    });
+                });
+            });
+
+            function toggleProfilePictureDropdown(event) {
+            event.stopPropagation();
+            var dropdown = document.getElementById("profile-picture-dropdown");
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        }
+
+        function removePicture() {
+            document.getElementById('profile-image').src = "{% static 'images/user.png' %}";
+            document.getElementById('image-upload').value = '';
+            // You may want to add an input to the form to indicate the picture should be removed
+            var removeInput = document.createElement('input');
+            removeInput.type = 'hidden';
+            removeInput.name = 'remove_profile_picture';
+            removeInput.value = 'true';
+            document.querySelector('form').appendChild(removeInput);
+        }
+
+        // Close the dropdown if clicked outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.edit-icon-wrapper') && !event.target.matches('.edit-icon')) {
+                var dropdown = document.getElementById("profile-picture-dropdown");
+                if (dropdown.style.display === "block") {
+                    dropdown.style.display = "none";
+                }
+            }
+        }
+
+        document.getElementById('image-upload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-image').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+                // Close the dropdown after selecting a file
+                document.getElementById("profile-picture-dropdown").style.display = "none";
+            }
+        });
+                
+        </script>
+    </body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Agent Deletion Confirmation</title>
+    {% load static %}
+    <link
+      rel="icon"
+      href="{% static 'images/Icon.png' %}"
+      type="image/png"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'styles/styles.css' %}"
+    />
+  </head>
+  <body class="profile-page">
+    <header>
+    </header>
+    <div
+      class="profile-container"
+      id="profile-container"
+      data-name="{{ agent.name }}"
+    >
+      <div class="main-content">
+        <div class="delete-confirmation-section">
+          <h2>Are you sure you want to delete agent {{ agent.name }}?</h2>
+          <p>
+            This action is irreversible. All data associated with this agent
+            will be permanently deleted.
+          </p>
+          <form
+            method="POST"
+            action="{% url 'delete_agent' agent.id %}"
+          >
+            {% csrf_token %}
+            <div class="button-group">
+              <button
+                type="submit"
+                class="btn btn-delete"
+                id="delete-agent"
+              >
+                Yes, Delete This Agent
+              </button>
+              <a href="{% url 'profile' %}">
+                <button
+                  type="button"
+                  class="btn cancel-delete"
+                >
+                  Cancel
+                </button>
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      const agentName = document.getElementById("profile-container");
+      const deletionButton = document.getElementById("delete-agent");
+
+      deletionButton.addEventListener(
+        "click",
+        localStorage.removeItem(agentName.attributes["data-name"].value)
+      );
+    </script>
+  </body>
+</html>

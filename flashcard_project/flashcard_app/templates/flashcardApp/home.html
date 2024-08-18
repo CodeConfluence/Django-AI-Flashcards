@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+    <title>SocialBrain</title>
+    {% load static %}
+    <link
+      rel="icon"
+      href="{% static 'images/Icon.png' %}"
+      type="image/png"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'styles/styles.css' %}"
+    />
+  </head>
+  <body class="chatbot-page">
+    <div
+      class="chatbot-aside-wrapper chatbot-aside-menu-wrapper-inactive"
+      id="header-aside-menu-wrapper"
+    >
+      <aside
+        class="chatbot-aside-menu"
+        id="chatbot-aside-menu"
+      >
+        <div class="aside-menu-actions-wrapper">
+          <!-- exit menu svg -->
+          <svg
+            id="aside-menu-exit"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            role="button"
+            focusable="true"
+            aria-label="Exit aside menu"
+            tabindex="1"
+          >
+            <title id="aside-exit-titleID">Exit aside menu</title>
+            <desc id="aside-exit-descID">
+              Icon representing a 'exit' for the aside menu
+            </desc>
+            <line
+              x1="18"
+              y1="6"
+              x2="6"
+              y2="18"
+            ></line>
+            <line
+              x1="6"
+              y1="6"
+              x2="18"
+              y2="18"
+            ></line>
+          </svg>
+          <!---->
+        </div>
+
+        <img
+          src="{% static 'images/socialbrain.png' %}"
+          alt="SocialBrain.ai Logo"
+          class="logo"
+          width="75"
+          height="75"
+        />
+
+        <!-- <div class="aside-menu-searchbar">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#000000"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            role="button"
+            focusable="true"
+            aria-label="Search agents"
+            tabindex="1"
+          >
+            <title id="aside-searchbar-titleID">Search query button</title>
+            <desc id="aside-searchbar-descID">
+              Icon representing a button to query results
+            </desc>
+            <circle
+              cx="11"
+              cy="11"
+              r="8"
+            ></circle>
+            <line
+              x1="21"
+              y1="21"
+              x2="16.65"
+              y2="16.65"
+            ></line>
+          </svg>
+
+          <form>
+            <input
+              placeholder="Search Agents"
+              type="text"
+              id="aside-search-bar"
+              class="aside-search-bar"
+            />
+          </form>
+        </div> -->
+
+        <div class="aside-previous-agents-wrapper">
+          <p class="aside-previous-agents-text">My Agents</p>
+
+          <div class="previous-agents-cards-wrapper">
+            {% for agent in agents %}
+            <div class="previous-agents-content-wrapper">
+              <p class="previous-agents-title">{{ agent.name }}</p>
+            </div>
+            {% empty %}
+            <div class="previous-agents-content-wrapper">
+              <p class="previous-agents-title">No agents found.</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="aside-recommended-agents-wrapper">
+          <p class="aside-recommended-agents-text">Recommended Agents</p>
+
+          <div class="recommended-agents-cards-wrapper">
+            <div class="recommended-agents-content-wrapper">
+              <img
+                class="recommended-agents-icon"
+                src="{% static 'images/amazon.svg' %}"
+                alt="Amazon's logo"
+              />
+              <p class="recommended-agents-title">Amazon</p>
+            </div>
+
+            <div class="recommended-agents-content-wrapper">
+              <img
+                class="recommended-agents-icon"
+                src="{% static 'images/youtube.svg' %}"
+                alt="YouTube's logo"
+              />
+              <p class="recommended-agents-title">YouTube</p>
+            </div>
+
+            <div class="recommended-agents-content-wrapper">
+              <img
+                class="recommended-agents-icon"
+                src="{% static 'images/discord.svg' %}"
+                alt="Discord's logo"
+              />
+              <p class="recommended-agents-title">Discord</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="chatbot-main-wrapper">
+      <header>
+        <nav class="chatbot-navigation">
+          <!-- inline menu svg -->
+          <svg
+            id="header-hamburger-menu"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            role="button"
+            focusable="true"
+            aria-label="Expand to view menu options"
+            tabindex="1"
+          >
+            <title id="hamburger-menu-titleID">Hamburger menu button</title>
+            <desc id="hamburger-menu-descID">
+              Icon representing a toggle for the navigation menu and agents for
+              the site
+            </desc>
+            <line
+              x1="3"
+              y1="12"
+              x2="21"
+              y2="12"
+            ></line>
+            <line
+              x1="3"
+              y1="6"
+              x2="21"
+              y2="6"
+            ></line>
+            <line
+              x1="3"
+              y1="18"
+              x2="21"
+              y2="18"
+            ></line>
+          </svg>
+          <!---->
+          <!-- inline profile svg -->
+          {% if user.is_authenticated %}
+          <div class="header-profile-wrapper">
+            <div class="dropdown">
+              <svg
+                id="header-profile-menu"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#ffffff"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-user"
+                role="button"
+                focusable="true"
+                aria-label="Expand to view profile options"
+                tabindex="1"
+                onclick="toggleDropdown()"
+              >
+                <title id="user-profile-titleID">Profile dropdown menu</title>
+                <desc id="user-profile-descID">
+                  Icon representing a dropdown for profile options
+                </desc>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle
+                  cx="12"
+                  cy="7"
+                  r="4"
+                ></circle>
+              </svg>
+              <div
+                id="profileDropdown"
+                class="dropdown-content"
+              >
+                <a
+                  href="{% url 'profile' %}"
+                  class="dropdown-item"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="icon"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3"
+                    ></circle>
+                    <path
+                      d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                    ></path>
+                  </svg>
+                  Account Settings
+                </a>
+                <form
+                  action="{% url 'logout' %}"
+                  method="post"
+                  id="logout-form"
+                >
+                  {% csrf_token %}
+                  <a
+                    href="javascript:void(0);"
+                    onclick="document.getElementById('logout-form').submit();"
+                    class="dropdown-item logout-item"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon"
+                    >
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                      <polyline points="16 17 21 12 16 7"></polyline>
+                      <line
+                        x1="21"
+                        y1="12"
+                        x2="9"
+                        y2="12"
+                      ></line>
+                    </svg>
+                    Log Out
+                  </a>
+                </form>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div class="auth-buttons">
+            <a
+              href="{% url 'register' %}"
+              class="auth-button register"
+              >Register</a
+            >
+            <a
+              href="{% url 'login' %}"
+              class="auth-button login"
+              >Login</a
+            >
+          </div>
+          {% endif %}
+        </nav>
+      </header>
+
+      <main
+        class="chatbot-chat-wrapper"
+        id="chatbot-chat-wrapper"
+      ></main>
+
+      <!-- chat box -->
+      <div class="chatbox-wrapper">
+        <div class="chatbot-chatbox-wrapper">
+          <!-- paperclip svg -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            role="button"
+            focusable="true"
+            aria-label="Search agents"
+            tabindex="1"
+            class="chatbox-paperclip-icon"
+          >
+            <title id="chatbot-paperclip-titleID">
+              Paperclip icon as a button
+            </title>
+            <desc id="chatbot-paperclip-descID">
+              Paperclip icon to symbolize 'paste' or 'files'
+            </desc>
+            <path
+              d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"
+            ></path>
+          </svg>
+          <!---->
+
+          <textarea
+            placeholder="Chat with custom Agent"
+            class="chatbot-chatbox-input"
+            tabindex="0"
+            dir="auto"
+            rows="1"
+            id="chatbot-chatbox-user-input"
+          ></textarea>
+
+          <!-- send svg -->
+          <svg
+            id="user-send-message"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            role="button"
+            focusable="true"
+            aria-label="Search agents"
+            tabindex="1"
+            class="chatbox-send-icon-inactive chatbox-send-icon"
+          >
+            <title id="chatbot-send-titleID">Mail icon as a button</title>
+            <desc id="chatbot-send-descID">
+              Send or mail icon to symbolize sending a message
+            </desc>
+            <line
+              x1="22"
+              y1="2"
+              x2="11"
+              y2="13"
+            ></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </div>
+      </div>
+      <!---->
+    </div>
+
+    <script>
+      // vars
+      const hamburgerMenu = document.getElementById("header-hamburger-menu");
+
+      const exitIcon = document.getElementById("aside-menu-exit");
+
+      const asideMenuWrapper = document.getElementById(
+        "header-aside-menu-wrapper"
+      );
+
+      const asideMenu = document.getElementById("chatbot-aside-menu");
+
+      const chatbox = document.getElementById("chatbot-chat-wrapper");
+
+      const sendMessage = document.getElementById("user-send-message");
+
+      const userMessage = document.getElementById("chatbot-chatbox-user-input");
+
+      const agents = document.querySelectorAll(
+        ".previous-agents-content-wrapper"
+      );
+
+      const recommendedAgents = document.querySelectorAll(
+        ".recommended-agents-content-wrapper"
+      );
+
+      // event listeners
+      window.onload = handleChatChange();
+
+      asideMenu.addEventListener("click", (e) => e.stopPropagation());
+
+      asideMenuWrapper.addEventListener("click", handleAsideMenuClose);
+
+      hamburgerMenu.addEventListener("click", handleAsideMenuOpen);
+
+      exitIcon.addEventListener("click", handleAsideMenuClose);
+
+      hamburgerMenu.addEventListener("keypress", (e) =>
+        e.key === "Enter" ? handleAsideMenuOpen(e) : null
+      );
+
+      exitIcon.addEventListener("keypress", (e) =>
+        e.key === "Enter" ? handleAsideMenuClose(e) : null
+      );
+
+      userMessage.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          return addUserMessage();
+        }
+      });
+
+      sendMessage.addEventListener("click", addUserMessage);
+
+      agents.forEach((element) =>
+        element.addEventListener("click", handleActiveAgent)
+      );
+
+      recommendedAgents.forEach((element) =>
+        element.addEventListener("click", handleActiveAgent)
+      );
+
+      // event handlers
+
+      function handleChatChange() {
+        const agent = getQueryParameters();
+
+        if (getLocalStorage(agent)) {
+          const previousMessages = JSON.parse(getLocalStorage(agent));
+
+          chatbox.innerHTML = "";
+          chatbox.style.height = "100%";
+
+          previousMessages.forEach((element) => {
+            if (typeof element === "object") {
+              addAgentMessage(
+                element.agentName,
+                element.message,
+                element.error ? true : false
+              );
+            } else {
+              insertUserMessage(element);
+            }
+          });
+
+          insertChatDivider();
+
+          scrollToBottom();
+        } else {
+          chatbox.innerHTML = "";
+          chatbox.style.height = "100%";
+        }
+      }
+
+      function scrollToBottom() {
+        const scrollableElement = document.querySelector(
+          ".chatbot-chat-wrapper"
+        );
+        scrollableElement.scrollTop = scrollableElement.scrollHeight;
+      }
+
+      function handleActiveAgent(e) {
+        agents.forEach((element) =>
+          element.classList.remove("currently-selected-agent")
+        );
+
+        recommendedAgents.forEach((element) =>
+          element.classList.remove("currently-selected-agent")
+        );
+
+        this.classList.add("currently-selected-agent");
+
+        const currentAgent =
+          this.children[0].textContent.toLowerCase() ||
+          this.children[1].textContent.toLowerCase();
+
+        const params = new URLSearchParams(window.location.search);
+        params.set("agent", currentAgent);
+        window.history.replaceState(
+          {},
+          "",
+          `${window.location.pathname}?${params}`
+        );
+
+        handleChatChange();
+      }
+
+      function handleAsideMenuOpen(e) {
+        e.stopPropagation();
+
+        asideMenu.classList.remove("chatbot-aside-menu-inactive");
+
+        asideMenuWrapper.classList.remove(
+          "chatbot-aside-menu-wrapper-inactive"
+        );
+      }
+
+      function handleAsideMenuClose(e) {
+        e.stopPropagation();
+
+        asideMenu.classList.add("chatbot-aside-menu-inactive");
+
+        asideMenuWrapper.classList.add("chatbot-aside-menu-wrapper-inactive");
+      }
+
+      function addAgentMessage(
+        agentTitle = "new_agent",
+        agentMessage,
+        error = false
+      ) {
+        chatbox.insertAdjacentHTML(
+          "beforeend",
+          `<div class="chatbot-chat-output-wrapper ">
+                <img
+                  src="{% static 'images/Icon.png' %}"
+                  alt="SocialBrain.ai Logo"
+                  class="chatbot-chat-social-brain-icon"
+                  width="36"
+                  height="36"
+                />
+
+                <div class="chatbot-chat-output-content">
+                  <div class="chatbot-chat-output-titles">
+                    <p class="chatbot-chat-social-brain">Social Brain</p>
+                    <p class="chatbot-chat-agent-name ${
+                      error ? "chatbot-chat-agent-name-error" : ""
+                    }">${formatString(ucFirst(agentTitle))}</p>
+                  </div>
+                  <div class="chatbot-chat-message ${
+                    error ? "chatbot-chat-message-error" : ""
+                  }">
+                    <p class="chatbot-chat-message-content">
+                      ${agentMessage}
+                    </p>
+                  </div>
+                </div>
+              </div>`
+        );
+      }
+
+      function insertUserMessage(message) {
+        chatbox.insertAdjacentHTML(
+          "beforeend",
+          `<div class="chatbot-user-output-wrapper">
+                <div class="chatbot-user-output-content">
+                  <div class="chatbot-user-message">
+                    <p class="chatbot-user-message-content">
+                      ${message}
+                    </p>
+                  </div>
+                </div>
+              </div>`
+        );
+      }
+
+      function insertChatDivider() {
+        chatbox.insertAdjacentHTML(
+          "beforeend",
+          `<div class="previous-messages-divider">
+            <div class="previous-messages-divisor"></div>
+            <p class="previous-messages-text">Previous Messages</p>
+            <div class="previous-messages-divisor"></div>
+          </div>`
+        );
+      }
+
+      async function addUserMessage() {
+        const userMessage = document.getElementById(
+          "chatbot-chatbox-user-input"
+        );
+
+        const trimmedMessage = userMessage.value.trim();
+
+        if (!trimmedMessage) return;
+
+        insertUserMessage(trimmedMessage);
+
+        scrollToBottom();
+
+        userMessage.value = "";
+
+        const queryParam = getQueryParameters();
+
+        if (queryParam) setLocalStorage(queryParam, trimmedMessage);
+
+        const response = await postContentView(trimmedMessage);
+
+        if (!response) throw Error("No response found.");
+
+        addAgentMessage(queryParam || "new_agent", response);
+
+        scrollToBottom();
+      }
+
+      async function postContentView(userMessage) {
+        try {
+          const postData = new URLSearchParams();
+
+          const agentName = getQueryParameters();
+
+          postData.append("message", userMessage);
+
+          const response = await fetch(
+            `/generate-content/${agentName || "new_agent"}/`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: postData.toString(),
+            }
+          );
+
+          if (!response.ok)
+            throw Error(
+              "Our services are currently down right now, please try again later!"
+            );
+
+          const data = await response.json();
+
+          if (!data)
+            throw Error(
+              "Our services are currently down right now, please try again later!"
+            );
+
+          const queryParam = getQueryParameters();
+
+          if (queryParam)
+            setLocalStorage(queryParam, {
+              agentName: queryParam,
+              message: data.response,
+            });
+
+          return data.response;
+        } catch (error) {
+          const errorTitle = "A Error Has Occurred";
+
+          const errorMessage =
+            "An Error has occurred, please try to generate a response again!";
+
+          addAgentMessage(errorTitle, errorMessage, true);
+
+          scrollToBottom();
+
+          const queryParam = getQueryParameters();
+
+          if (queryParam)
+            setLocalStorage(
+              queryParam,
+              {
+                agentName: errorTitle,
+                message: errorMessage,
+                error: true,
+              },
+              true
+            );
+        }
+      }
+
+      function ucFirst(str) {
+        const splitString = str.toLowerCase().split(" ");
+
+        const formattedString = splitString.map(
+          (word) => `${word[0].toUpperCase()}${word.slice(1)}`
+        );
+
+        return formattedString.join(" ");
+      }
+
+      function formatString(str) {
+        return str.trim().split("-").join(" ").split("_").join(" ");
+      }
+
+      function setLocalStorage(key, value, agent = false) {
+        if (getLocalStorage(key)) {
+          const previousMessages = JSON.parse(localStorage.getItem(key)) || [];
+
+          const newData = [
+            ...previousMessages,
+            agent
+              ? {
+                  agentName: value.agentName,
+                  message: value.message,
+                  error: value.error,
+                }
+              : value,
+          ];
+
+          localStorage.setItem(key, JSON.stringify(newData));
+        } else {
+          localStorage.setItem(
+            key,
+            JSON.stringify([
+              agent ? { agentName: agent.name, message: value } : value,
+            ])
+          );
+        }
+      }
+
+      function getLocalStorage(key) {
+        return localStorage.getItem(key);
+      }
+
+      function getQueryParameters() {
+        const searchParams = new URLSearchParams(window.location.search);
+
+        if (searchParams.has("agent")) return searchParams.get("agent");
+        else return false;
+      }
+
+      function toggleDropdown() {
+        document.getElementById("profileDropdown").classList.toggle("show");
+      }
+
+      window.onclick = function (event) {
+        if (!event.target.matches("#header-profile-menu")) {
+          var dropdowns = document.getElementsByClassName("dropdown-content");
+          for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains("show")) {
+              openDropdown.classList.remove("show");
+            }
+          }
+        }
+      };
+    </script>
+  </body>
+</html>
