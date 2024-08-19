@@ -1,11 +1,9 @@
 import os
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from decouple import config
 import google.generativeai as genai
-from .models import ChatHistory, Message
-from .forms import ChatHistoryForm, MessageForm
 
 genai.configure(api_key=config('API_KEY'))
 
@@ -27,14 +25,14 @@ def generate_content_view(request, agent_name):
     
     file_path = os.path.join(directory_path, files[0])
     
-    knowledge_base_file = genai.upload_file(path=file_path, display_name=f"Agent '{flashcard_set.name}' Knowledge Base PDF") 
+    flashcard_resource_file = genai.upload_file(path=file_path, display_name=f"Agent '{flashcard_set.name}' Knowledge Base PDF") 
 
     if request.method == "POST":
         user_message = request.POST.get('message')
         if not user_message:
             return JsonResponse({"error": "No message provided"}, status=400)
 
-        modified_user_message = f"Using this knowledge base in the file, respond to the user message: {user_message}"
+        modified_user_message = f"Using the information in the file, generate [insert amount of flashcards] flashcards: {user_message}"
 
         response_schema = {
             "type": "OBJECT",
@@ -66,12 +64,13 @@ def generate_content_view(request, agent_name):
         }
 
 
-         # contents = [knowledge_base_file, modified_user_message]
+        contents = [flashcard_resource_file, modified_user_message]
         response = model.generate_content(
-            modified_user_message,
+            contents,
             generation_config=genai.GenerationConfig(
                 response_mime_type="application/json", response_schema=response_schema
             ),
+            stream=False,
         )
         chatbot_response = response.text
 
