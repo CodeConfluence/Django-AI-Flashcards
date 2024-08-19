@@ -171,10 +171,6 @@ from decouple import config
 import google.generativeai as genai
 
 genai.configure(api_key=config('API_KEY'))
-
-@csrf_exempt
-def generate_content_view(request):
-   pass
    
 @login_required
 def flashcard_set_list_view(request): 

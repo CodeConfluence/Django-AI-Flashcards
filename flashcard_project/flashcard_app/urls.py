@@ -26,7 +26,6 @@ urlpatterns = [
     path('flashcard_sets/<int:set_id>/edit/', views.update_flashcard_set_view, name='edit_flashcard_set'), # update flashcard set details
     path('flashcard_sets/<int:set_id>/delete/', views.delete_flashcard_set_view, name='delete_flashcard_set'), # delete flashcard set
     path('flashcard_sets/selection/', views.flashcard_set_selection_view, name='flashcard_set_selection'), # where the user selects which flashcard set they're going to use
-    path('generate-content/<str:set_name>/', views.generate_content_view, name='generate_content'),
 ]
 
 if settings.DEBUG:
