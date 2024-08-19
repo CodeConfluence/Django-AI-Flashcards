@@ -31,4 +31,5 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('', include('flashcard_app.urls')),
     path('', include('user_payment.urls')),
+    path('', include('AI.urls')),
 ]
