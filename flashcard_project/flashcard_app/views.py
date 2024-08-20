@@ -15,6 +15,7 @@ import os
 from django.utils.text import slugify
 from django.contrib.auth import logout
 from .models import Profile
+from .forms import FlashcardSetForm, FlashcardForm
 
 def register_view(request):
     if request.method == 'POST':
@@ -190,7 +191,16 @@ def flashcard_set_selection_view(request):
 
 @login_required
 def create_flashcard_set_view(request):
-    pass
+    if request.method == 'POST':
+        form = FlashcardSetForm(request.POST)
+        if form.is_valid():
+            flashcard_set = form.save(commit=False)
+            flashcard_set.creator = request.user
+            flashcard_set.save()
+            return redirect('flashcard_set_list')
+    else:
+        form = FlashcardSetForm()
+    return render(request, 'flashcard_app/create_flashcard_set.html', {'form': form})
 
 @login_required
 def update_flashcard_set_view(request):
