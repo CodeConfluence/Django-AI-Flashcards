@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'flashcard_app'
+    'flashcard_app',
+    'user_payment',
 ]
 
 MIDDLEWARE = [
@@ -120,9 +121,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILESDIRS = (
-    os.path.join(BASE_DIR, 'static')
-)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'flashcard_app', 'static')
+]
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Redirect to home page after login
 LOGIN_URL = '/login/'
